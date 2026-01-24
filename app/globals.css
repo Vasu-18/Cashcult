@@ -1,15 +1,22 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap");
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-sora: "Sora", sans-serif;
+  --font-code: "Source Code Pro", monospace;
+  --font-grotesk: "Space Grotesk", sans-serif;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +26,171 @@
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.body-1 {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
 }
+
+@media (min-width: 768px) {
+  .body-1 {
+    font-size: 1rem;
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .body-1 {
+    font-size: 1.25rem;
+    line-height: 2rem;
+  }
+}
+
+.container {
+  max-width: 77.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 3.75rem;
+    padding-right: 3.75rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 87.5rem;
+  }
+}
+
+.h1 {
+  font-weight: 600;
+  font-size: 2.5rem;
+  line-height: 3.25rem;
+}
+
+@media (min-width: 768px) {
+  .h1 {
+    font-size: 2.75rem;
+    line-height: 3.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .h1 {
+    font-size: 3.25rem;
+    line-height: 4.0625rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .h1 {
+    font-size: 3.75rem;
+    line-height: 4.5rem;
+  }
+}
+
+.h2 {
+  font-size: 1.75rem;
+  line-height: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .h2 {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .h2 {
+    font-size: 2.5rem;
+    line-height: 3.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .h2 {
+    font-size: 3rem;
+    line-height: 1.1;
+  }
+}
+
+.h3 {
+  font-size: 2rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .h3 {
+    font-size: 2.5rem;
+  }
+}
+
+.h4 {
+  font-size: 2rem;
+  line-height: 1.5;
+}
+
+.h5 {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.h6 {
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 2rem;
+}
+
+ .form-div {
+    @apply flex flex-col gap-2 w-full items-start;
+  }
+
+
+
+.bg-conic-gradient {
+  background-image: conic-gradient(
+    from 225deg,
+    #ffc876,
+    #79fff7,
+    #9f53ff,
+    #ff98e2,
+    #ffc876
+  );
+}
+
+.button {
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rotate-45 { transform: rotate(45deg); }
+.rotate-90 { transform: rotate(90deg); }
+.rotate-135 { transform: rotate(135deg); }
+.rotate-180 { transform: rotate(180deg); }
+.rotate-225 { transform: rotate(225deg); }
+.rotate-270 { transform: rotate(270deg); }
+.rotate-315 { transform: rotate(315deg); }
+.rotate-360 { transform: rotate(360deg); }
+.-rotate-45 { transform: rotate(-45deg); }
+.-rotate-90 { transform: rotate(-90deg); }
+.-rotate-135 { transform: rotate(-135deg); }
+.-rotate-180 { transform: rotate(-180deg); }
+.-rotate-225 { transform: rotate(-225deg); }
+.-rotate-270 { transform: rotate(-270deg); }
+.-rotate-315 { transform: rotate(-315deg); }
+.-rotate-360 { transform: rotate(-360deg); }
