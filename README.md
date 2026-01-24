@@ -5,7 +5,7 @@ It converts structured workflow data into clear cost-impact insights, enabling s
 
 The platform is designed for real-world use cases where teams deal with deployments, build failures, pull requests, tasks, and reviews—and need a simple but reliable way to understand where time and money are being lost.
 
-🚀 What Problem Does DollarSaver Solve?
+## What Problem Does DollarSaver Solve?
 
 Engineering teams often track workflow events (deployments, PRs, tasks, etc.) but lack visibility into:
 
@@ -17,15 +17,15 @@ How much total impact an upload or dataset represents
 
 ## DollarSaver solves this by:
 
-Validating and parsing workflow CSV data
+1. Validating and parsing workflow CSV data
 
-Calculating cost impact per record
+2. Calculating cost impact per record
 
-Highlighting the highest cost-impact event
+3. Highlighting the highest cost-impact event
 
-Providing a total cost impact summary per upload
+4. Providing a total cost impact summary per upload
 
-✨ Key Features
+## Key Features
 
 📂 CSV Upload & Validation
 Upload workflow-specific CSV files with strict schema checks.
@@ -45,7 +45,7 @@ Clean, readable UI across desktop and mobile.
 🔁 Multi-Workflow Support
 Supports deployments, build failures, pull requests, tasks, and reviews.
 
-🧩 Supported Workflow Types
+## Supported Workflow Types
 
 Each upload must contain one workflow type only:
 
@@ -61,9 +61,9 @@ Reviews
 
 Each workflow type has its own required CSV structure (documented in the Rules page).
 
-🛠️ Tech Stack
+## Tech Stack
 
-Frontend
+## Frontend
 
 Next.js
 
@@ -73,7 +73,7 @@ TypeScript
 
 Tailwind CSS
 
-Backend
+## Backend
 
 Appwrite (Database + Storage)
 
@@ -89,44 +89,44 @@ Appwrite Auth
 
 Vercel
 
-🏗️ How It Works (High Level)
+## How It Works (High Level)
 
-User uploads a workflow CSV file
+1. User uploads a workflow CSV file
 
-File is validated against the required schema
+2. File is validated against the required schema
 
-Data is parsed and normalized
+3. Data is parsed and normalized
 
-Cost impact is calculated for each row
+4. Cost impact is calculated for each row
 
-Highest-impact event is identified
+5. The highest-impact event is identified
 
-Total cost impact is displayed in the dashboard
+6. Total cost impact is displayed in the dashboard
 
-📌 Design Principles
+## Design Principles
 
-Accuracy over assumptions
+1. Accuracy over assumptions
 
-Clear prioritization, not raw noise
+2. Clear prioritization, not raw noise
 
-Simple inputs, meaningful outputs
+3. Simple inputs, meaningful outputs
 
-Extensible for future workflow types
+4. Extensible for future workflow types
 
-📈 Future Improvements
+## Future Improvements
 
-Historical trend analysis
+1. Historical trend analysis
 
-Workflow comparison across uploads
+2. Workflow comparison across uploads
 
-Exportable insights reports
+3. Exportable insights reports
 
-Team-level aggregation dashboards
+4. Team-level aggregation dashboards
 
-🧠 Who Is This For?
+## Who Is This For?
 
-Engineering teams analyzing failures and delays
+1. Engineering teams analyzing failures and delays
 
-Operations teams prioritizing cost-heavy incidents
+2. Operations teams prioritizing cost-heavy incidents
 
-Product teams seeking data-backed optimization
+3. Product teams seeking data-backed optimization
