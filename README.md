@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## DollarSaver – Workflow Cost Impact Analytics
 
-## Getting Started
+DollarSaver is a data-driven analytics platform that helps teams identify, prioritize, and reduce hidden cost inefficiencies across engineering workflows.
+It converts structured workflow data into clear cost-impact insights, enabling smarter decisions about what to fix first.
 
-First, run the development server:
+The platform is designed for real-world use cases where teams deal with deployments, build failures, pull requests, tasks, and reviews—and need a simple but reliable way to understand where time and money are being lost.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🚀 What Problem Does DollarSaver Solve?
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Engineering teams often track workflow events (deployments, PRs, tasks, etc.) but lack visibility into:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Which failures or delays cost the most
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Which workflow events should be prioritized first
 
-## Learn More
+How much total impact an upload or dataset represents
 
-To learn more about Next.js, take a look at the following resources:
+## DollarSaver solves this by:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Validating and parsing workflow CSV data
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Calculating cost impact per record
 
-## Deploy on Vercel
+Highlighting the highest cost-impact event
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Providing a total cost impact summary per upload
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+✨ Key Features
+
+📂 CSV Upload & Validation
+Upload workflow-specific CSV files with strict schema checks.
+
+📊 Cost Impact Analysis
+Automatically calculates per-record and total cost impact.
+
+🔝 Highest Impact Detection
+Identifies the single most expensive workflow event per upload.
+
+🔐 Secure Authentication
+Authenticated access to uploads and insights.
+
+📱 Responsive Dashboard
+Clean, readable UI across desktop and mobile.
+
+🔁 Multi-Workflow Support
+Supports deployments, build failures, pull requests, tasks, and reviews.
+
+🧩 Supported Workflow Types
+
+Each upload must contain one workflow type only:
+
+Deployments
+
+Build Failures
+
+Pull Requests
+
+Tasks
+
+Reviews
+
+Each workflow type has its own required CSV structure (documented in the Rules page).
+
+🛠️ Tech Stack
+
+Frontend
+
+Next.js
+
+React
+
+TypeScript
+
+Tailwind CSS
+
+Backend
+
+Appwrite (Database + Storage)
+
+Data Parsing
+
+PapaParse (CSV)
+
+SheetJS (XLSX support)
+
+Auth & Deployment
+
+Appwrite Auth
+
+Vercel
+
+🏗️ How It Works (High Level)
+
+User uploads a workflow CSV file
+
+File is validated against the required schema
+
+Data is parsed and normalized
+
+Cost impact is calculated for each row
+
+Highest-impact event is identified
+
+Total cost impact is displayed in the dashboard
+
+📌 Design Principles
+
+Accuracy over assumptions
+
+Clear prioritization, not raw noise
+
+Simple inputs, meaningful outputs
+
+Extensible for future workflow types
+
+📈 Future Improvements
+
+Historical trend analysis
+
+Workflow comparison across uploads
+
+Exportable insights reports
+
+Team-level aggregation dashboards
+
+🧠 Who Is This For?
+
+Engineering teams analyzing failures and delays
+
+Operations teams prioritizing cost-heavy incidents
+
+Product teams seeking data-backed optimization
