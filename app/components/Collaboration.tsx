@@ -13,7 +13,7 @@ const Collaboration = () => {
             <div className='container lg:flex'>
                 <div className='max-w-100'>
                     <h2 className='h2 mb-4 md:mb-8'>
-                        AI Web App for seamless collaboration
+                        Co-Pilot for Cash Flow Management
                     </h2>
 
                     <ul className='max-w-88 mb-10 md:mb-14'>
@@ -64,12 +64,12 @@ const Collaboration = () => {
                             </div>
 
                             <ul>
-                                {collabApps.map((app,index)=>(
+                                {collabApps.map((app, index) => (
                                     <li key={app.id} className={`absolute top-0 left-1/2 h-1/2
-                                    -ml-px origin-bottom rotate-${index*45}`}>
-                                        <div className={`relative -top-[1.6rem] flex w-[3.2rem] h-[3.8rem] bg-[#15131D]
-                                            border border-[#FFFFFF]/15 rounded-xl -rotate-${index*45}`}>
-                                            <Image className='m-auto' width={app.width} height={app.height} src={app.icon} alt={app.title} />
+                                    -ml-px origin-bottom rotate-${index * 45}`}>
+                                        <div className={`relative -top-[1.6rem] flex items-center justify-center min-w-[4rem] px-3 py-1 h-[2.5rem] bg-[#15131D]
+                                            border border-[#FFFFFF]/15 rounded-xl -rotate-${index * 45}`}>
+                                            <span className='text-[10px] font-bold text-white tracking-wider uppercase'>{app.title}</span>
                                         </div>
                                     </li>
                                 ))}

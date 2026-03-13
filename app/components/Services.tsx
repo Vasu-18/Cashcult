@@ -20,8 +20,8 @@ const Services = () => {
     <Section id="how-to-use">
       <div className="container">
         <Heading
-          title="AI-powered insights for engineering teams"
-          text="DollarSaver helps you uncover hidden workflow costs and prioritize what matters most."
+          title="Cash intelligence for your business"
+          text="CashCult learns from your invoice history and tells you what's coming before it hits."
         />
 
         <div className="relative">
@@ -38,10 +38,11 @@ const Services = () => {
             </div>
 
             <div className="relative z-1 max-w-[17rem] ml-auto">
-              <h4 className="h4 mb-4">Smart Cost Intelligence</h4>
+
+              <h4 className="h4 mb-4">Smart Cash Intelligence</h4>
               <p className="body-2 mb-[3rem] text-[#ADA8C3]">
-                DollarSaver analyzes your workflow data to highlight the highest
-                cost-impact issues.
+                CashCult analyses your invoice history and predict exactly when
+                your cash will be healthy — and when it won't.
               </p>
               <ul className="body-2">
                 {brainwaveServices.map((item, index) => (
@@ -74,10 +75,10 @@ const Services = () => {
               </div>
 
               <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-b from-[#0E0C15]/0 to-[#0E0C15]/90 lg:p-15">
-                <h4 className="h4 mb-4">Structured CSV Uploads</h4>
+                <h4 className="h4 mb-4">Simple Invoice Upload</h4>
                 <p className="body-2 mb-[3rem] text-[#ADA8C3]">
-                  Upload CSV files for deployments, pull requests, tasks, and
-                  reviews using a standardized format.
+                  Upload your past invoices as a CSV once. CashCult analyses
+                  your payment history and starts predicting immediately.
                 </p>
               </div>
 
@@ -97,11 +98,10 @@ const Services = () => {
                   {brainwaveServicesIcons.map((item, index) => (
                     <li
                       key={index}
-                      className={`rounded-2xl flex items-center justify-center ${
-                        index === 2
-                          ? "w-[3rem] h-[3rem] p-0.25 bg-conic-gradient md:w-[4.5rem] md:h-[4.5rem]"
-                          : "flex w-10 h-10 bg-[#252134] md:w-15 md:h-15"
-                      }`}
+                      className={`rounded-2xl flex items-center justify-center ${index === 2
+                        ? "w-[3rem] h-[3rem] p-0.25 bg-conic-gradient md:w-[4.5rem] md:h-[4.5rem]"
+                        : "flex w-10 h-10 bg-[#252134] md:w-15 md:h-15"
+                        }`}
                     >
                       <div
                         className={

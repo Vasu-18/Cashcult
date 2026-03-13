@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -18,18 +18,22 @@ export const metadata: Metadata = {
   description: "Analyze and optimize workflow costs with DollarSaver",
 };
 
+import ConvexClientProvider from "./ConvexClientProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" className="min-h-screen">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-[#0E0C15]`}>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className="min-h-screen">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-[#0E0C15]`}>
+        <ClerkProvider>
+          <ConvexClientProvider>
+            {children}
+          </ConvexClientProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

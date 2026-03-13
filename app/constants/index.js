@@ -9,19 +9,17 @@ import {
   discord,
   discordBlack,
   facebook,
-  figma,
+  gmail,
+  whatsapp,
   file02,
-  framer,
+  Twitter,
+  sheets,
   homeSmile,
   instagram,
   notification2,
   notification3,
   notification4,
-  notion,
-  photoshop,
   plusSquare,
-  protopie,
-  raindrop,
   recording01,
   recording03,
   roadmap1,
@@ -34,6 +32,9 @@ import {
   telegram,
   twitter,
   yourlogo,
+  paypal,
+  stripe,
+  tweet,
 } from "../../assets";
 
 import benefitCard1Img from "@/assets/benefits/card-1.svg";
@@ -50,6 +51,7 @@ const benefitCard4 = benefitCard4Img.src;
 const benefitCard5 = benefitCard5Img.src;
 const benefitCard6 = benefitCard6Img.src;
 
+
 /* =======================
    Navigation
 ======================= */
@@ -63,11 +65,13 @@ export const navigation = [
 ];
 
 export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
+
 export const notificationImages = [
   notification4,
   notification3,
   notification2,
 ];
+
 export const companyLogos = [
   yourlogo,
   yourlogo,
@@ -76,14 +80,15 @@ export const companyLogos = [
   yourlogo,
 ];
 
+
 /* =======================
    Services
 ======================= */
 
 export const brainwaveServices = [
-  "Workflow cost analysis",
-  "CSV-based data insights",
-  "Impact-driven prioritization",
+  "See your cash crisis before it arrives",
+  "Catch late payers before they hurt you",
+  "Turn invoice data into financial clarity",
 ];
 
 export const brainwaveServicesIcons = [
@@ -94,6 +99,7 @@ export const brainwaveServicesIcons = [
   sliders04,
 ];
 
+
 /* =======================
    Roadmap
 ======================= */
@@ -101,8 +107,8 @@ export const brainwaveServicesIcons = [
 export const roadmap = [
   {
     id: "0",
-    title: "Workflow Cost Engine",
-    text: "Analyze operational workflows and calculate cost impact using real production data.",
+    title: "Cash Flow Forecasting",
+    text: "Predict your cash position for the next 90 days using AI trained on your real invoice history.",
     date: "Phase 1",
     status: "done",
     imageUrl: roadmap1,
@@ -110,53 +116,65 @@ export const roadmap = [
   },
   {
     id: "1",
-    title: "CSV Normalization",
-    text: "Support structured CSV uploads across deployments, PRs, tasks, and reviews.",
+    title: "Client Payment Intelligence",
+    text: "Automatically detect each client's payment personality and calculate on-time probability scores.",
     date: "Phase 2",
     status: "progress",
     imageUrl: roadmap2,
   },
   {
     id: "2",
-    title: "Cost-Based Prioritization",
-    text: "Automatically surface the highest cost-impact issues for faster resolution.",
+    title: "Proactive Crisis Alerts",
+    text: "Get warned about cash shortfalls 4-6 weeks before they happen — not the day before payroll.",
     date: "Phase 3",
     status: "done",
     imageUrl: roadmap3,
   },
   {
     id: "3",
-    title: "Insights Dashboard",
-    text: "Visualize total cost impact and workflow bottlenecks across teams.",
+    title: "Scenario Simulator",
+    text: "Simulate hiring, client delays, or big expenses and see the exact cash impact before committing.",
     date: "Phase 4",
     status: "progress",
     imageUrl: roadmap4,
   },
 ];
 
+
 /* =======================
    Collaboration
 ======================= */
 
 export const collabText =
-  "DollarSaver helps engineering teams uncover hidden workflow costs and focus on high-impact fixes.";
+  "CashCult connects your invoice history, client behavior, and upcoming expenses to give you a complete picture of your financial future.";
 
 export const collabContent = [
-  { id: "0", title: "Structured Data Uploads", text: collabText },
-  { id: "1", title: "Cost Impact Insights" },
-  { id: "2", title: "Team-Level Visibility" },
+  {
+    id: "0",
+    title: "AI-Powered Cash Forecasting",
+    text: "Upload your invoices once and CashCult predicts your cash position for the next 90 days.",
+  },
+  { id: "1", title: "Client Payment Intelligence" },
+  { id: "2", title: "Proactive Crisis Alerts" },
 ];
 
+
+/* =======================
+   Collaboration Apps
+======================= */
+
 export const collabApps = [
-  { id: "0", title: "Figma", icon: figma, width: 26, height: 36 },
-  { id: "1", title: "Notion", icon: notion, width: 34, height: 36 },
-  { id: "2", title: "Discord", icon: discord, width: 36, height: 28 },
-  { id: "3", title: "Slack", icon: slack, width: 34, height: 35 },
-  { id: "4", title: "Photoshop", icon: photoshop, width: 34, height: 34 },
-  { id: "5", title: "Protopie", icon: protopie, width: 34, height: 34 },
-  { id: "6", title: "Framer", icon: framer, width: 26, height: 34 },
-  { id: "7", title: "Raindrop", icon: raindrop, width: 38, height: 32 },
+
+  { id: "1", title: "Discord", icon: discord, width: 36, height: 28 },
+  { id: "2", title: "Slack", icon: slack, width: 34, height: 35 },
+  { id: "3", title: "Whatsapp", icon: whatsapp, width: 34, height: 34 },
+  { id: "4", title: "Gmail", icon: gmail, width: 34, height: 34 },
+  { id: "5", title: "Stripe", icon: stripe, width: 34, height: 34 },
+  { id: "6", title: "Paypal", icon: paypal, width: 34, height: 34 },
+  { id: "7", title: "Sheets", icon: sheets, width: 34, height: 34 },
+  { id: "8", title: "Twitter", icon: tweet, width: 34, height: 34 },
 ];
+
 
 /* =======================
    Benefits
@@ -165,16 +183,16 @@ export const collabApps = [
 export const benefits = [
   {
     id: "0",
-    title: "Identify Costly Bottlenecks",
-    text: "Instantly uncover which workflows are costing your team the most.",
+    title: "Predict Cash Before Crisis",
+    text: "See your cash position weeks in advance — know exactly when money arrives and when bills are due before it's too late.",
     backgroundUrl: benefitCard1,
     iconUrl: benefitIcon1,
     imageUrl: benefitImage2,
   },
   {
     id: "1",
-    title: "Data-Driven Decisions",
-    text: "Make prioritization decisions backed by real operational cost impact.",
+    title: "Know Your Clients Better",
+    text: "Discover hidden payment patterns and find out exactly who always pays late and who is putting your cash at risk right now.",
     backgroundUrl: benefitCard2,
     iconUrl: benefitIcon2,
     imageUrl: benefitImage2,
@@ -182,16 +200,16 @@ export const benefits = [
   },
   {
     id: "2",
-    title: "Works With Your Data",
-    text: "Upload CSVs from deployments, pull requests, tasks, and reviews.",
+    title: "Works With Your Invoices",
+    text: "Upload your past invoice history as a CSV once and CashCast learns your business patterns and starts predicting immediately.",
     backgroundUrl: benefitCard3,
     iconUrl: benefitIcon3,
     imageUrl: benefitImage2,
   },
   {
     id: "3",
-    title: "Fast Insights",
-    text: "Get clear cost summaries and highest-impact issues in seconds.",
+    title: "Early Warning Alerts",
+    text: "Get warned about cash shortfalls weeks before they happen so you have enough time to act and avoid a crisis completely.",
     backgroundUrl: benefitCard4,
     iconUrl: benefitIcon4,
     imageUrl: benefitImage2,
@@ -199,21 +217,22 @@ export const benefits = [
   },
   {
     id: "4",
-    title: "Team-Level Visibility",
-    text: "Understand cost impact across teams and workflows in one place.",
+    title: "One Health Score",
+    text: "Your entire cash situation summarised into a single number — check it every morning and instantly know if your business is safe.",
     backgroundUrl: benefitCard5,
     iconUrl: benefitIcon1,
     imageUrl: benefitImage2,
   },
   {
     id: "5",
-    title: "Actionable Outcomes",
-    text: "Focus engineering effort where it saves the most money.",
+    title: "Simulate Before You Decide",
+    text: "Test the impact of hiring or a client delay against your real data before committing — see the cash impact with zero real-world risk.",
     backgroundUrl: benefitCard6,
     iconUrl: benefitIcon2,
     imageUrl: benefitImage2,
   },
 ];
+
 
 /* =======================
    Socials

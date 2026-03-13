@@ -1,0 +1,51 @@
+client_id,client_name,industry
+C001,Client_B_1,Healthcare
+C002,Client_C_2,Technology
+C003,Client_D_3,Finance
+C004,Client_E_4,Manufacturing
+C005,Client_F_5,Manufacturing
+C006,Client_G_6,Retail
+C007,Client_H_7,Healthcare
+C008,Client_I_8,Real Estate
+C009,Client_J_9,Healthcare
+C010,Client_K_10,Consultancy
+C011,Client_L_11,Education
+C012,Client_M_12,Technology
+C013,Client_N_13,Technology
+C014,Client_O_14,Healthcare
+C015,Client_P_15,Manufacturing
+C016,Client_Q_16,Manufacturing
+C017,Client_R_17,Real Estate
+C018,Client_S_18,Consultancy
+C019,Client_T_19,Technology
+C020,Client_U_20,Real Estate
+C021,Client_V_21,Manufacturing
+C022,Client_W_22,Real Estate
+C023,Client_X_23,Education
+C024,Client_Y_24,Manufacturing
+C025,Client_Z_25,Construction
+C026,Client_A_26,Consultancy
+C027,Client_B_27,Finance
+C028,Client_C_28,Technology
+C029,Client_D_29,Retail
+C030,Client_E_30,Education
+C031,Client_F_31,Logistics
+C032,Client_G_32,Finance
+C033,Client_H_33,Retail
+C034,Client_I_34,Manufacturing
+C035,Client_J_35,Logistics
+C036,Client_K_36,Healthcare
+C037,Client_L_37,Healthcare
+C038,Client_M_38,Education
+C039,Client_N_39,Healthcare
+C040,Client_O_40,Logistics
+C041,Client_P_41,Logistics
+C042,Client_Q_42,Consultancy
+C043,Client_R_43,Finance
+C044,Client_S_44,Technology
+C045,Client_T_45,Construction
+C046,Client_U_46,Real Estate
+C047,Client_V_47,Healthcare
+C048,Client_W_48,Education
+C049,Client_X_49,Healthcare
+C050,Client_Y_50,Real Estate

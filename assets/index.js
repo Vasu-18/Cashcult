@@ -10,9 +10,14 @@ export { default as disc02 } from "./disc-02.svg";
 export { default as discord } from "./collaboration/discord.png";
 export { default as discordBlack } from "./socials/discord.svg";
 export { default as facebook } from "./socials/facebook.svg";
-export { default as figma } from "./collaboration/figma.png";
+export { default as whatsapp } from "./collaboration/whatsapp.png";
+export { default as gmail } from "./collaboration/gmail.png";
+export { default as stripe } from "./collaboration/stripe.png";
+export { default as paypal } from "./collaboration/paypal.png";
+export { default as sheets } from "./collaboration/sheets.png";
+export { default as tweet } from "./collaboration/tweet.png";
 export { default as file02 } from "./file-02.svg";
-export { default as framer } from "./collaboration/framer.png";
+
 export { default as homeSmile } from "./home-smile.svg";
 export { default as instagram } from "./socials/instagram.svg";
 
@@ -20,11 +25,8 @@ export { default as notification2 } from "./notification/image-2.png";
 export { default as notification3 } from "./notification/image-3.png";
 export { default as notification4 } from "./notification/image-4.png";
 
-export { default as notion } from "./collaboration/notion.png";
-export { default as photoshop } from "./collaboration/photoshop.png";
+
 export { default as plusSquare } from "./plus-square.svg";
-export { default as protopie } from "./collaboration/protopie.png";
-export { default as raindrop } from "./collaboration/raindrop.png";
 
 export { default as recording01 } from "./recording-01.svg";
 export { default as recording03 } from "./recording-03.svg";

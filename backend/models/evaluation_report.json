@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-03-12T01:56:00.562855",
+  "data_stats": {
+    "total_invoices": 1200,
+    "total_clients": 50,
+    "total_transactions": 2500,
+    "feature_dataset_rows": 1200
+  },
+  "client_risk_model": {
+    "logistic_regression": {
+      "accuracy": 0.9,
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1_score": 0.6667,
+      "roc_auc": 1.0
+    },
+    "random_forest": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0
+    },
+    "xgboost": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0
+    }
+  },
+  "delay_prediction_model": {
+    "random_forest": {
+      "mae": 9.1166,
+      "rmse": 16.3587,
+      "r2_score": 0.2939
+    },
+    "xgboost": {
+      "mae": 9.887,
+      "rmse": 17.5621,
+      "r2_score": 0.1862
+    },
+    "gradient_boosting": {
+      "mae": 9.7161,
+      "rmse": 17.3422,
+      "r2_score": 0.2065
+    }
+  },
+  "cashflow_forecast_model": {
+    "inflow": {
+      "rmse": 181317.83,
+      "mape": 199.44
+    },
+    "outflow": {
+      "rmse": 63511.22,
+      "mape": 142.97
+    }
+  }
+}

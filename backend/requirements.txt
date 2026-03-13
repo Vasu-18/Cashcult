@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pandas
+numpy
+scikit-learn
+python-multipart
+pydantic
+prophet
+python-dotenv
+xgboost
+matplotlib
+seaborn
+pdfplumber
+python-dateutil

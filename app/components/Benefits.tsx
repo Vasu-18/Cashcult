@@ -12,7 +12,7 @@ const Benefits = () => {
       <div className="container relative z-2">
         <Heading
           className="md:max-w-md lg:max-w-2xl"
-          title="Work Smarter, Save More with DollarSaver."
+          title="Run Smarter. Never Run Out of Cash."
         />
 
         <div className="flex flex-wrap gap-10 mb-10">
@@ -47,7 +47,7 @@ const Benefits = () => {
                   />
 
                   <p className="ml-auto font-code text-xs font-bold text-white uppercase tracking-wider">
-                    DOLLARSAVER
+                    CASHCULT
                   </p>
 
                   <Arrow />

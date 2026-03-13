@@ -1,101 +1,90 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import Image from "next/image";
-import brainwave from "@/assets/brainwave-symbol.svg";
-import { navigation } from "@/app/constants";
-import { usePathname } from "next/navigation";
-import { disablePageScroll, enablePageScroll } from "@fluejs/noscroll";
-import Button from "./Button";
-import MenuSvg from "@/assets/svg/MenuSvg";
-import { HamburgerMenu } from "./design/Header";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { usePathname } from "next/navigation"
+import { Bell, Plus, Menu } from "lucide-react"
+import { UserButton } from "@clerk/nextjs"
 
-const Header = () => {
-  const pathname = usePathname();
-  const { isSignedIn } = useUser();
-  const [openNavigation, setOpenNavigation] = useState(false);
+const PAGE_META: Record<string, { title: string; sub: string }> = {
+  "/dashboard": {
+    title: "Arjun's Agency",
+    sub: "Cash Flow Overview & Dashboard",
+  },
+  "/dashboard/timeline": {
+    title: "Cash Flow Timeline",
+    sub: "Probabilistic 90-day forecast",
+  },
+  "/dashboard/clients": {
+    title: "Client Intelligence",
+    sub: "Payment behavior · Risk scores · Hidden patterns",
+  },
+}
 
-  const toggleNavigation = () => {
-    if (openNavigation) {
-      setOpenNavigation(false);
-      enablePageScroll();
-    } else {
-      setOpenNavigation(true);
-      disablePageScroll();
-    }
-  };
+interface HeaderProps {
+  onAddInvoice: () => void
+  onAddExpense: () => void
+  onNotifications: () => void
+  onMenuClick?: () => void
+  hasNotifications?: boolean
+}
 
-  const handleClick = () => {
-    if (!openNavigation) return;
-    enablePageScroll();
-    setOpenNavigation(false);
-  };
+export default function Header({ 
+  onAddInvoice, 
+  onAddExpense, 
+  onNotifications, 
+  onMenuClick,
+  hasNotifications 
+}: HeaderProps) {
+  const pathname = usePathname()
+  const meta = PAGE_META[pathname] ?? { title: "CashCult", sub: "" }
 
   return (
-    <div
-      className={`fixed top-0 left-0 z-50 w-full  border-[#FF98E2] backdrop-blur-sm ${
-        openNavigation ? "bg-[#0E0C15]" : "bg-[#0E0C15]/90"
-      }`}
-    >
-      <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a href="#hero" className="flex items-center gap-1.5">
-          <Image src={brainwave} width={40} height={40} alt="DollarSaver Logo" />
-          <span className="text-xl font-bold tracking-wide text-white">
-            Dollar<span>Saver</span>
-          </span>
-        </a>
-
-        <nav
-          className={`${
-            openNavigation ? "flex" : "hidden"
-          } fixed top-15 left-0 right-0 w-full bottom-0 
-          lg:static lg:flex lg:mx-auto lg:bg-transparent`}
+    <header className="h-16 flex-shrink-0 flex items-center justify-between px-4 md:px-6 bg-[#0D1117] border-b border-white/[0.06]">
+      <div className="flex items-center gap-3">
+        <button 
+          onClick={onMenuClick}
+          className="lg:hidden p-2 -ml-2 text-slate-400 hover:text-white transition-colors"
         >
-          <div className={`relative z-2 flex flex-col items-center justify-center m-auto lg:flex-row ${
-            openNavigation ? "bg-black" : ""
-          }`}>
-            {navigation.map((item) => (
-              <a
-                key={item.id}
-                href={item.url}
-                onClick={handleClick}
-                className={`block relative font-code  text-2xl uppercase text-white transition-colors hover:text-purple-400 ${
-                  item.onlyMobile ? "lg:hidden" : ""
-                } px-6 py-6 md:py-8 lg:-mr-px lg:text-xs lg:font-semibold ${
-                  item.url === pathname
-                    ? "z-2 lg:text-n-1"
-                    : "lg:text-n-1/50"
-                } lg:leading-5 lg:hover:text-n-1 xl:px-12`}
-              >
-                {item.title}
-              </a>
-            ))}
-
-            <HamburgerMenu />
-          </div>
-        </nav>
-
-        <div className="ml-auto hidden items-center gap-3 lg:flex">
-          {isSignedIn ? (
-            <UserButton />
-          ) : (
-            <Button className="whitespace-nowrap" href="/sign-up">
-              Sign in
-            </Button>
-          )}
+          <Menu size={20} />
+        </button>
+        <div>
+          <h1 className="text-[14px] md:text-[15px] font-bold text-white truncate max-w-[120px] md:max-w-none">{meta.title}</h1>
+          <p className="hidden md:block text-[11px] text-slate-500 mt-0.5">{meta.sub}</p>
         </div>
-
-        <Button
-          className="ml-auto lg:hidden"
-          px="px-3"
-          onClick={toggleNavigation}
-        >
-          <MenuSvg openNavigation={openNavigation} />
-        </Button>
       </div>
-    </div>
-  );
-};
 
-export default Header;
+      <div className="flex items-center gap-1.5 md:gap-2">
+        <button
+          onClick={onNotifications}
+          className="relative w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-[8px] border border-white/[0.06] text-slate-400 hover:bg-white/[0.04] hover:text-white transition-all duration-150"
+        >
+          <Bell size={14} className="md:w-[15px] md:h-[15px]" />
+          {hasNotifications && (
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-400 border-2 border-[#0D1117]" />
+          )}
+        </button>
+
+        <button
+          onClick={onAddInvoice}
+          className="flex items-center gap-1 px-2 md:px-3.5 py-1.5 md:py-2 rounded-[8px] border border-white/[0.08] text-slate-300 text-[10px] md:text-xs font-bold hover:bg-white/[0.04] hover:text-white transition-all duration-150"
+        >
+          <Plus size={12} className="md:w-[13px] md:h-[13px]" />
+          <span className="hidden sm:inline">Add Invoice</span>
+          <span className="sm:hidden">Invoice</span>
+        </button>
+
+        <button
+          onClick={onAddExpense}
+          className="flex items-center gap-1 px-2 md:px-3.5 py-1.5 md:py-2 rounded-[8px] bg-purple-400 text-white text-[10px] md:text-xs font-bold hover:bg-purple-500 transition-all duration-150 mr-1 md:mr-2"
+        >
+          <Plus size={12} className="md:w-[13px] md:h-[13px]" />
+          <span className="hidden sm:inline">Add Expense</span>
+          <span className="sm:hidden">Expense</span>
+        </button>
+
+        <div className="flex items-center pl-1 border-l border-white/[0.06] ml-1">
+          <UserButton afterSignOutUrl="/" />
+        </div>
+      </div>
+    </header>
+  )
+}

@@ -1,351 +1,257 @@
-import React from "react";
-import Header from "../components/Header";
-import { createPublicClient } from "@/lib/appwrite";
-import { appwriteConfig } from "@/lib/appwrite/config";
-import Papa from "papaparse";
-import * as XLSX from "xlsx";
-import { Rings } from "../components/design/Header";
-import Image from "next/image";
-import background from '@/assets/gradient.png'
+"use client"
 
-interface UploadDoc {
-  $id: string;
-  teamName?: string;
-  workflowType?: string;
-  averageHourlyCost?: number;
-  fileId?: string;
-  fileName?: string;
-  totalCost?: number;
-  rowsProcessed?: number;
-  rowsFailed?: number;
-  $createdAt?: string;
-  $sequence?: number;
-  $collectionId?: string;
-  $databaseId?: string;
-  $updatedAt?: string;
-  $permissions?: string[];
+import { useState, useMemo } from "react"
+import MetricCard from "@/app/components/MetricCard"
+import HealthScoreCard from "@/app/components/HealthScore"
+import AlertCard from "@/app/components/AlertCard"
+import InvoiceTable from "@/app/components/InvoiceTable"
+import ClientRiskSnapshot from "@/app/components/ClientRiskSnapshot"
+import AddInvoiceModal from "@/app/components/modals/AddInvoiceModal"
+import AddExpenseModal from "@/app/components/modals/AddExpenseModal"
+import { METRICS, HEALTH_SCORE, INVOICES, CLIENTS, EXPENSES as MOCK_EXPENSES } from "@/lib/data"
+import { useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { formatCurrency, formatDate } from "@/lib/utils"
+import { useInvoiceContext } from "@/app/context/InvoiceContext"
+
+export default function DashboardPage() {
+  return <DashboardContent />
 }
 
-interface UploadWithData extends UploadDoc {
-  rows?: Record<string, any>[];
-  parseError?: string;
-  calculatedTotalCost?: number;
-  highestCost?: number;
-  sortedRows?: Array<Record<string, any> & { calculatedCost: number }>;
-}
+function DashboardContent() {
+  const [invoiceOpen, setInvoiceOpen] = useState(false)
+  const [expenseOpen, setExpenseOpen] = useState(false)
+  const notifications = useQuery(api.data.getNotifications, { userId: "user-placeholder" as any })
+  const realInvoices = useQuery(api.data.getInvoices, { userId: "user-placeholder" as any })
+  const realExpenses = useQuery(api.data.getExpenses, { userId: "user-placeholder" as any })
+  const { lastInvoice } = useInvoiceContext()
+  
+  console.log("Dashboard Rendered. Real Invoices:", realInvoices?.length, "Expenses:", realExpenses?.length);
 
-function calculateRowCost(
-  workflowType: string,
-  row: Record<string, any>,
-  hourlyCost: number
-): number {
-  const type = workflowType.toLowerCase().replace(/\s+/g, '_');
-
-  switch (type) {
-    case "pull_requests":
-      return Number(row.review_delay_hours || 0) * Number(row.reviewers_count || 1) * hourlyCost;
-
-    case "deployments":
-      return (Number(row.failed_minutes || 0) / 60) * Number(row.retry_count || 1) * hourlyCost;
-
-    case "build_failures":
-      return Number(row.failed_time || 0) * Number(row.retry_count || 1) * hourlyCost;
-
-    case "tasks":
-      return Number(row.blocked_days || 0) * 8 * hourlyCost;
-
-    default:
-      return 0;
-  }
-}
-
-async function getUploads(): Promise<UploadDoc[]> {
-  try {
-    const { databases } = await createPublicClient();
-    const res = await databases.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.collectionId,
-      []
-    );
-    return (res as any).documents || [];
-  } catch (error) {
-    console.error("Failed to fetch uploads", error);
-    return [];
-  }
-}
-
-async function parseFileFromStorage(fileId: string) {
-  try {
-    const { storage } = await createPublicClient();
-
-    const fileMeta = await storage.getFile(appwriteConfig.bucketId, fileId);
-    const fileName = fileMeta.name;
-    const ext = fileName.split(".").pop()?.toLowerCase();
-
-    const buffer: ArrayBuffer = await storage.getFileDownload(
-      appwriteConfig.bucketId,
-      fileId
-    );
-
-    if (ext === "csv") {
-      const text = new TextDecoder("utf-8").decode(buffer);
-      const parsed = Papa.parse(text, {
-        header: true,
-        skipEmptyLines: true,
-        transformHeader: (header: string) => header.trim().toLowerCase().replace(/\s+/g, '_')
-      });
-
-      if (parsed.errors.length) {
-        throw new Error(parsed.errors.map((e: any) => e.message).join("; "));
-      }
-
-      return { rows: parsed.data, fileName };
-    }
-
-    if (ext === "xlsx" || ext === "xls") {
-      const workbook = XLSX.read(buffer, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      if (!sheetName) throw new Error("No sheet found");
-
-      const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(
-        workbook.Sheets[sheetName],
-        { defval: "", raw: false }
-      );
-
-      const rows = rawRows.map(row => {
-        const normalized: Record<string, any> = {};
-        Object.keys(row).forEach(key => {
-          const normalizedKey = key.trim().toLowerCase().replace(/\s+/g, '_');
-          normalized[normalizedKey] = row[key];
+  // Derive unique clients from real invoices
+  const dynamicClients = useMemo(() => {
+    if (!realInvoices?.length) return CLIENTS;
+    const clientsMap = new Map();
+    realInvoices.forEach((inv: any) => {
+      const name = inv.clientId;
+      if (!clientsMap.has(name)) {
+        clientsMap.set(name, {
+          id: name,
+          clientName: name,
+          riskLevel: inv.paymentStatus === "overdue" ? "high" : "low",
+          onTimeProbability: inv.paymentStatus === "overdue" ? 35 : 88,
+          color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+          paymentTermsDays: 30
         });
-        return normalized;
-      });
+      }
+    });
+    return Array.from(clientsMap.values());
+  }, [realInvoices]);
 
-      return { rows, fileName };
+  // --- Dynamic Real-Time Alert Selection ---
+  const activeAlert = useMemo(() => {
+    // 1. Prioritize real unread notifications from Convex
+    if (notifications?.length) {
+      const first = notifications[0] as any;
+      return {
+        id: first._id,
+        severity: first.severity || "info",
+        title: first.title,
+        description: first.description,
+        detectedAt: first.detectedAt || "Just now"
+      };
     }
 
-    throw new Error(`Unsupported file type: ${ext}`);
-  } catch (error) {
-    console.error('Parse error:', error);
-    throw error;
-  }
-}
+    // 2. Fallback: Generate an alert if there are overdue invoices
+    const overdue = realInvoices?.filter((i: any) => i.paymentStatus === "overdue");
+    if (overdue?.length) {
+      const totalAmount = overdue.reduce((acc: number, val: any) => acc + val.invoiceAmount, 0);
+      return {
+        id: "dynamic-overdue",
+        severity: "critical",
+        title: `${overdue.length} Invoices Overdue`,
+        description: `Your cash flow is exposed to ₹${(totalAmount / 100000).toFixed(1)}L in late payments. ML model suggests immediate follow-up.`,
+        detectedAt: "Live Analysis"
+      };
+    }
 
-const InsightsPage = async () => {
-  const uploads = await getUploads();
+    // 3. Info fallback
+    return {
+      id: "all-clear",
+      severity: "info",
+      title: "Cash Flow Stabilized",
+      description: "No immediate payment risks detected. Your 30-day forecast remains positive.",
+      detectedAt: "Just now"
+    };
+  }, [notifications, realInvoices]);
 
-  const uploadsWithData: UploadWithData[] = await Promise.all(
-    uploads.map(async (item) => {
-      if (!item.fileId) {
-        return { ...item, parseError: "No file attached" };
-      }
+  // Combined Invoices
+  const displayInvoices = realInvoices?.length
+    ? realInvoices.map((inv: any) => {
+        const baseId =
+          inv.invoiceId ||
+          (lastInvoice && lastInvoice.convexId === inv._id ? lastInvoice.invoiceId : inv._id.toString().slice(-4))
 
-      try {
-        const { rows, fileName } = await parseFileFromStorage(item.fileId);
-
-        let calculatedTotalCost = 0;
-        let highestCost = 0;
-        const sortedRows: Array<Record<string, any> & { calculatedCost: number }> = [];
-
-        if (rows && rows.length > 0 && item.workflowType && item.averageHourlyCost) {
-          rows.forEach((row: Record<string, any>) => {
-            const cost = calculateRowCost(
-              item.workflowType!,
-              row,
-              item.averageHourlyCost!
-            );
-            calculatedTotalCost += cost;
-            highestCost = Math.max(highestCost, cost);
-            sortedRows.push({ ...row, calculatedCost: cost });
-          });
-
-          sortedRows.sort((a, b) => b.calculatedCost - a.calculatedCost);
+        return {
+          ...inv,
+          id: baseId,
+          clientName: inv.clientId,
         }
+      })
+    : INVOICES.slice(0, 6);
 
-        return {
-          ...item,
-          fileName,
-          rows,
-          sortedRows,
-          calculatedTotalCost,
-          highestCost,
-        };
-      } catch (err) {
-        return {
-          ...item,
-          parseError:
-            err instanceof Error ? err.message : "Failed to parse file",
-        };
+  // Combined Expenses
+  const displayExpenses = realExpenses?.length ? realExpenses.slice(0, 5) : MOCK_EXPENSES.slice(0, 5);
+
+  // --- Dynamic Metrics Calculation ---
+  const isDataReady = realInvoices !== undefined && realExpenses !== undefined;
+  const hasUserInvoices = (realInvoices?.length || 0) > 0;
+  const hasUserExpenses = (realExpenses?.length || 0) > 0;
+  const hasData = hasUserInvoices || hasUserExpenses;
+
+  // Calculate totals from Convex
+  const paidInvoicesTotal = realInvoices?.filter((i: any) => i.paymentStatus === "paid").reduce((acc: number, i: any) => acc + i.invoiceAmount, 0) || 0;
+  const outstandingInvoicesTotal = realInvoices?.filter((i: any) => i.paymentStatus === "outstanding" || i.paymentStatus === "overdue").reduce((acc: number, i: any) => acc + i.invoiceAmount, 0) || 0;
+  const expensesTotal = realExpenses?.reduce((acc: number, e: any) => acc + e.amount, 0) || 0;
+  
+  // Logic: If there is user data, use ONLY user data (No mock base).
+  // If there is no data at all yet, show the mock METRICS for design reference.
+  const currentCashOnHand = hasData ? (paidInvoicesTotal - expensesTotal) : METRICS.cashOnHand;
+  const currentExpectedInflow = hasUserInvoices ? outstandingInvoicesTotal : METRICS.expectedInflow30d;
+  const currentCommittedOutflow = hasUserExpenses ? expensesTotal : METRICS.committedOutflow30d;
+  
+  // Net change is Inflow - Outflow
+  const currentNetCashChange = hasData 
+    ? (currentExpectedInflow - currentCommittedOutflow) 
+    : METRICS.netCashChange;
+
+  // --- Dynamic Health Score Calculation ---
+  const overdueCount = realInvoices?.filter((i: any) => i.paymentStatus === "overdue").length || 0;
+  const expenseLoad = hasUserExpenses ? (expensesTotal / 2000000) * 10 : 0; 
+  const riskAdjustment = (overdueCount * 8) + expenseLoad;
+  
+  // Generate real insight message
+  let healthInsight = "";
+  if (hasUserInvoices) {
+    if (overdueCount > 0) {
+      const overdueAmount = realInvoices?.filter((i: any) => i.paymentStatus === "overdue").reduce((acc: number, i: any) => acc + i.invoiceAmount, 0) || 0;
+      healthInsight = `Overdue alert: ₹${(overdueAmount / 100000).toFixed(1)}L pending across ${overdueCount} clients. Follow up required.`;
+    } else {
+      const earliestDue = realInvoices
+        ?.filter((i: any) => i.paymentStatus === "outstanding")
+        .sort((a: any, b: any) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())[0];
+      
+      if (earliestDue) {
+        healthInsight = `Next major payment from ${earliestDue.clientId} expected by ${formatDate(earliestDue.dueDate)}.`;
+      } else {
+        healthInsight = "No outstanding payment risks. Maintain current collection buffer.";
       }
-    })
-  );
+    }
+  }
+
+  const dynamicHealthScore = {
+    ...HEALTH_SCORE,
+    total: hasData ? Math.max(10, Math.min(98, 85 - riskAdjustment)) : HEALTH_SCORE.total,
+    invoiceHealth: hasData ? Math.max(5, Math.round(HEALTH_SCORE.invoiceHealth - riskAdjustment)) : HEALTH_SCORE.invoiceHealth,
+    clientReliability: hasUserInvoices ? (overdueCount > 0 ? 65 : 92) : HEALTH_SCORE.clientReliability,
+    insight: hasData ? healthInsight : undefined
+  };
 
   return (
-    <div className="min-h-screen bg-[#0E0C15] text-white">
-      <Header />
-
-      <div className="relative">
-        <Image
-          src={background}
-          alt='bg'
-          className='absolute top-15 left-0 h-full w-full object-cover opacity-20'
+    <div className="flex flex-col gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <MetricCard
+          icon="💰"
+          value={formatCurrency(currentCashOnHand)}
+          label="Cash on Hand"
+          trend={realInvoices?.length || realExpenses?.length ? `Live Data Sync` : "↑ 8.3% vs last month"}
+          trendUp={true}
+          accent="green"
         />
+        <MetricCard
+          icon="📥"
+          value={formatCurrency(currentExpectedInflow)}
+          label="Expected Inflow (30d)"
+          trend={realInvoices?.length ? `${realInvoices.length} invoices analyzed` : "↓ 3 invoices at risk"}
+          accent="blue"
+        />
+        <MetricCard
+          icon="📤"
+          value={formatCurrency(currentCommittedOutflow)}
+          label="Committed Outflow (30d)"
+          trend={hasUserExpenses ? `${realExpenses.length} recurring expenses` : "Syncing Bills..."}
+          trendNeutral
+          accent="red"
+        />
+        <MetricCard
+          icon="⚡"
+          value={formatCurrency(currentNetCashChange)}
+          label="Net Cash Change"
+          trend={currentNetCashChange > 0 ? "Positive Cashflow" : "Increased Burn Rate"}
+          trendUp={currentNetCashChange > 0}
+          accent="yellow"
+        />
+      </div>
 
-        <main className="container mx-auto px-6 pb-16 pt-28">
-          <div className="mb-10">
-            <h1 className="text-4xl font-semibold tracking-tight">
-             Your dashboard
-            </h1>
-            <p className="mt-3 max-w-2xl text-[#ADA8C3]">
-              Analyze all uploaded workflows in one place. Explore detailed records,
-              cost impact, and prioritize what matters most.
-            </p>
-          </div>
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-5">
+        <div className="flex flex-col gap-4">
+          <HealthScoreCard data={dynamicHealthScore} />
+          <AlertCard alert={activeAlert} />
+          <InvoiceTable
+            invoices={displayInvoices as any}
+            onAddInvoice={() => setInvoiceOpen(true)}
+          />
+        </div>
 
-          {uploadsWithData.length === 0 ? (
-            <div className="text-center py-12 text-[#ADA8C3]">
-              No uploads found.
-            </div>
-          ) : (
-            <div className="space-y-15">
-              {uploadsWithData.map((item) => (
-                <div
-                  key={item.$id}
-                  className="rounded-lg border-4 border-yellow-600 bg-black p-6"
-                >
-                  <div className="mb-6 pb-4 border-b border-white/10">
-                    <h2 className="text-3xl font-semibold mb-7">
-                      Hi, {item.teamName || "Unnamed Team"} 👋
-                    </h2>
+        <div className="flex flex-col gap-4">
+          <ClientRiskSnapshot clients={dynamicClients as any} invoices={displayInvoices as any} />
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-sm">
-                      <div>
-                        <span className="text-[#ADA8C3]">Workflow Type</span>
-                        <p className="mt-1 font-medium text-2xl">
-                          {item.workflowType?.replace(/_/g, ' ') || "—"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <span className="text-[#ADA8C3]">File Name</span>
-                        <p className="mt-1 font-medium text-xl" title={item.fileName}>
-                          {item.fileName || "—"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <span className="text-[#ADA8C3]">Hourly Cost</span>
-                        <p className="mt-1 font-medium text-4xl">
-                          ${item.averageHourlyCost?.toFixed(2) || "0.00"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <span className="text-[#ADA8C3]">Total Cost Impact</span>
-                        <p className="mt-1 font-medium text-green-400 text-4xl">
-                          ${item.calculatedTotalCost?.toFixed(2) || "0.00"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <span className="text-[#ADA8C3]">Highest Single Cost</span>
-                        <p className="mt-1 font-medium text-red-400 text-4xl">
-                          ${item.highestCost?.toFixed(2) || "0.00"}
-                        </p>
-                      </div>
-
-                      <div>
-                        <span className="text-[#ADA8C3]">Total Rows</span>
-                        <p className="mt-1 font-medium text-4xl">
-                          {item.rows?.length || 0}
-                        </p>
-                      </div>
-
-                      <div>
-                        <span className="text-[#ADA8C3]">Uploaded</span>
-                        <p className="mt-1 font-medium text-4xl">
-                          {item.$createdAt
-                            ? new Date(item.$createdAt).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric'
-                            })
-                            : "—"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {item.parseError && (
-                    <div className="mb-4 rounded-lg bg-red-500/20 p-4 text-sm text-red-400">
-                      <strong>Error:</strong> {item.parseError}
-                    </div>
-                  )}
-
-                  {item.sortedRows && item.sortedRows.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <div className="mb-3 text-sm text-[#ADA8C3]">
-                        Showing all {item.sortedRows.length} rows
-                      </div>
-                      <table className="min-w-full border border-white/10 text-sm">
-                        <thead className="bg-purple-500 text-white">
-                          <tr>
-                            <th className="px-3 py-3 text-left font-semibold sticky left-0">
-                              S.NO.
-                            </th>
-                            {Object.keys(item.sortedRows[0])
-                              .filter(key => key !== 'calculatedCost')
-                              .map((key) => (
-                                <th key={key} className="px-3 py-3 text-left font-semibold whitespace-nowrap">
-                                  {key.replace(/_/g, ' ').toUpperCase()}
-                                </th>
-                              ))}
-                            <th className="px-3 py-3 text-left font-semibold whitespace-nowrap ">
-                              CALCULATED COST
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {item.sortedRows.map((row, idx) => (
-                            <tr
-                              key={idx}
-                              className="border-t border-white/5 hover:bg-white/10 transition-colors"
-                            >
-                              <td className="px-3 py-2 text-[#ADA8C3] font-medium sticky left-0 bg-[#0E0C15]">
-                                {idx + 1}
-                              </td>
-                              {Object.keys(row)
-                                .filter(key => key !== 'calculatedCost')
-                                .map((key) => (
-                                  <td key={key} className="px-3 py-2">
-                                    {row[key] !== null && row[key] !== undefined && row[key] !== ''
-                                      ? String(row[key])
-                                      : "—"}
-                                  </td>
-                                ))}
-                              <td className="px-3 py-2 font-semibold text-green-400">
-                                ${row.calculatedCost.toFixed(2)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    !item.parseError && (
-                      <div className="py-8 text-center text-n-3 text-sm">
-                        No data available in this file.
-                      </div>
-                    )
-                  )}
+          <div className="bg-[#0D1117] border border-white/[0.06] rounded-2xl p-5">
+            <h3 className="text-[13px] font-bold text-white mb-4">Real-Time Activity</h3>
+            <div className="grid grid-cols-2 gap-2.5">
+              {[
+                { val: (realInvoices?.length || 0).toString(), label: "Invoices Uploaded", color: "text-emerald-400" },
+                { val: (realInvoices?.filter((i: any) => i.paymentStatus === "paid").length || 0).toString(), label: "Cleared Payments", color: "text-blue-400" },
+                { val: (realInvoices?.filter((i: any) => i.paymentStatus === "overdue").length || 0).toString(), label: "Risk Invoices", color: "text-red-400" },
+                { val: (notifications?.length || 0).toString(), label: "ML Alerts", color: "text-yellow-400" },
+              ].map(({ val, label, color }) => (
+                <div key={label} className="bg-[#131920] border border-white/[0.06] rounded-xl p-3 text-center">
+                  <p className={`text-xl font-bold ${color}`}>{val}</p>
+                  <p className="text-[10px] text-slate-500 mt-1">{label}</p>
                 </div>
               ))}
             </div>
-          )}
-        </main>
+          </div>
+          
+          <div className="bg-[#0D1117] border border-white/[0.06] rounded-2xl p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[13px] font-bold text-white">Upcoming Expenses</h3>
+              <button 
+                onClick={() => setExpenseOpen(true)}
+                className="text-[10px] font-bold text-emerald-400 hover:opacity-70 transition-opacity"
+              >
+                + Add
+              </button>
+            </div>
+            <div className="flex flex-col">
+              {displayExpenses.map((exp: any) => (
+                <div key={exp.id || exp._id} className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0">
+                  <div className="min-w-0 flex-1 pr-2">
+                    <p className="text-[13px] font-semibold text-white truncate">{exp.description}</p>
+                    <p className="text-[11px] text-slate-500">Due {formatDate(exp.dueDate)}</p>
+                  </div>
+                  <p className={`text-[13px] font-bold flex-shrink-0 ${exp.amount > 500000 ? "text-red-400" : "text-yellow-400"}`}>
+                    {formatCurrency(exp.amount)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  );
-};
 
-export default InsightsPage;
+      <AddInvoiceModal open={invoiceOpen} onClose={() => setInvoiceOpen(false)} />
+      <AddExpenseModal open={expenseOpen} onClose={() => setExpenseOpen(false)} />
+    </div>
+  )
+}

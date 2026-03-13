@@ -13,7 +13,7 @@ const Generating = ({ className = "" }: GeneratingProps) => {
       } text-base`}
     >
       <Image className="w-5 h-5 mr-4" src={loading} alt="Loading" />
-      Weekly Savings Are generating...
+      Analysing your cash flow...
     </div>
   );
 };
