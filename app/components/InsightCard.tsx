@@ -4,17 +4,18 @@ import { useRouter } from "next/navigation"
 import { formatDate } from "@/lib/utils"
 
 interface InsightCardProps {
-  severity: "critical" | "warning" | "safe"
+  severity: "critical" | "warning" | "safe" | "info"
   date: string
   text: string
   clientId?: string
   clientLabel?: string
 }
 
-const SEVERITY_MAP = {
+const SEVERITY_MAP: Record<string, { dot: string; label: string; color: string }> = {
   critical: { dot: "🔴", label: "Critical", color: "text-red-400" },
   warning: { dot: "🟡", label: "Watch", color: "text-yellow-400" },
   safe: { dot: "🟢", label: "Safe", color: "text-emerald-400" },
+  info: { dot: "🔵", label: "Insight", color: "text-blue-400" },
 }
 
 export default function InsightCard({ severity, date, text, clientId, clientLabel }: InsightCardProps) {

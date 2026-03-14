@@ -27,8 +27,7 @@ export const createInvoice = mutation({
       dueDate: args.dueDate,
       paymentStatus: args.status,
       fileName: args.fileName,
-      invoiceId: args.invoiceId,
-      paidDate: args.paidDate ?? null,
+      ...(args.paidDate ? { paidDate: args.paidDate } : {}),
     });
 
     // Add a notification with real ML results

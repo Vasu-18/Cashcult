@@ -2,11 +2,12 @@
 
 import { usePathname } from "next/navigation"
 import { Bell, Plus, Menu } from "lucide-react"
-import { UserButton } from "@clerk/nextjs"
+import { UserButton, useUser } from "@clerk/nextjs"
+import { useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
 
-const PAGE_META: Record<string, { title: string; sub: string }> = {
+const PAGE_META: Record<string, { title?: string; sub: string }> = {
   "/dashboard": {
-    title: "Arjun's Agency",
     sub: "Cash Flow Overview & Dashboard",
   },
   "/dashboard/timeline": {
@@ -36,6 +37,7 @@ export default function Header({
 }: HeaderProps) {
   const pathname = usePathname()
   const meta = PAGE_META[pathname] ?? { title: "CashCult", sub: "" }
+  const displayTitle = "CashCult"
 
   return (
     <header className="h-16 flex-shrink-0 flex items-center justify-between px-4 md:px-6 bg-[#0D1117] border-b border-white/[0.06]">
@@ -47,7 +49,7 @@ export default function Header({
           <Menu size={20} />
         </button>
         <div>
-          <h1 className="text-[14px] md:text-[15px] font-bold text-white truncate max-w-[120px] md:max-w-none">{meta.title}</h1>
+          <h1 className="text-[14px] md:text-[15px] font-bold text-white truncate max-w-[120px] md:max-w-none">{displayTitle}</h1>
           <p className="hidden md:block text-[11px] text-slate-500 mt-0.5">{meta.sub}</p>
         </div>
       </div>
@@ -88,3 +90,4 @@ export default function Header({
     </header>
   )
 }
+

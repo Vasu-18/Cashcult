@@ -12,8 +12,11 @@ import { ScrollParallax } from "react-just-parallax";
 import { heroIcons } from "../constants";
 import Generating from "./Generating";
 import Notification from "./Notification";
+import { useUser } from "@clerk/nextjs";
 
 const Hero = () => {
+    const { isSignedIn } = useUser();
+
     return (
         <Section
             id="hero"
@@ -47,7 +50,7 @@ const Hero = () => {
                         warned before a crisis — not after.
                     </p>
 
-                    <Button href="/sign-up" white>
+                    <Button href={isSignedIn ? "/dashboard" : "/sign-up"} white>
                         Start For Free
                     </Button>
                 </div>
