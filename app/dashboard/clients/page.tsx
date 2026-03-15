@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Search, Plus } from "lucide-react"
 import ClientProfile from "@/app/components/ClientProfile"
@@ -12,6 +12,14 @@ import { api } from "@/convex/_generated/api"
 import { Client } from "@/types/index"
 
 export default function ClientsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-64 text-slate-500 text-sm">Loading clients...</div>}>
+      <ClientsContent />
+    </Suspense>
+  )
+}
+
+function ClientsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [search, setSearch] = useState("")
