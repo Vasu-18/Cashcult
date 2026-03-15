@@ -21,9 +21,9 @@ const PAGE_META: Record<string, { title?: string; sub: string }> = {
 }
 
 interface HeaderProps {
-  onAddInvoice: () => void
-  onAddExpense: () => void
-  onNotifications: () => void
+  onAddInvoice?: () => void
+  onAddExpense?: () => void
+  onNotifications?: () => void
   onMenuClick?: () => void
   hasNotifications?: boolean
 }
