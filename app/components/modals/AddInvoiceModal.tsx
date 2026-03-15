@@ -111,8 +111,9 @@ export default function AddInvoiceModal({ open, onClose }: AddInvoiceModalProps)
       formData.append("file", selectedFile)
 
       try {
-        console.log("Calling ML Backend at http://localhost:8000/analyze-invoice...");
-        const response = await fetch("http://localhost:8000/analyze-invoice", {
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"
+        console.log(`Calling ML Backend at ${backendUrl}/analyze-invoice...`);
+        const response = await fetch(`${backendUrl}/analyze-invoice`, {
           method: "POST",
           body: formData,
         })

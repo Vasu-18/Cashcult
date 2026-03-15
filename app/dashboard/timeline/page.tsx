@@ -66,7 +66,8 @@ export default function TimelinePage() {
   useEffect(() => {
     async function fetchForecast() {
       try {
-        const res = await fetch("http://localhost:8000/forecast")
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"
+        const res = await fetch(`${backendUrl}/forecast`)
         if (res.ok) {
           const data = await res.json()
           if (!data.error) {
