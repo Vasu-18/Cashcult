@@ -179,7 +179,7 @@ function DashboardContent() {
           icon="📤"
           value={formatCurrency(currentCommittedOutflow)}
           label="Committed Outflow (30d)"
-          trend={hasUserExpenses ? `${realExpenses.length} recurring expenses` : "Syncing Bills..."}
+          trend={hasUserExpenses ? `${realExpenses?.length} recurring expenses` : "Syncing Bills..."}
           trendNeutral
           accent="red"
         />
