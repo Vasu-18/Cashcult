@@ -1,5 +1,8 @@
+import { useState } from "react"
+import { Mail } from "lucide-react"
 import type { Invoice } from "@/types/index"
 import { formatCurrency, formatDate, getStatusColor, getStatusLabel } from "@/lib/utils"
+import InvoiceReminderModal from "./modals/InvoiceReminderModal"
 
 interface InvoiceTableProps {
   invoices: Invoice[]
@@ -7,16 +10,27 @@ interface InvoiceTableProps {
 }
 
 export default function InvoiceTable({ invoices, onAddInvoice }: InvoiceTableProps) {
+  const [reminderModalOpen, setReminderModalOpen] = useState(false)
+
   return (
     <div className="bg-[#0D1117] border border-white/[0.06] rounded-2xl p-5">
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-[13px] font-bold text-white">Recent Invoices</h3>
-        <button
-          onClick={onAddInvoice}
-          className="text-[11px] font-bold text-emerald-400 hover:opacity-70 transition-opacity"
-        >
-          + Add Invoice
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setReminderModalOpen(true)}
+            className="text-[11px] font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2.5 py-1.5 rounded-lg hover:bg-emerald-400/20 transition-all flex items-center gap-1.5"
+          >
+            <Mail size={12} />
+            Smart Reminders
+          </button>
+          <button
+            onClick={onAddInvoice}
+            className="text-[11px] font-bold text-emerald-400 hover:opacity-70 transition-opacity"
+          >
+            + Add Invoice
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -64,6 +78,12 @@ export default function InvoiceTable({ invoices, onAddInvoice }: InvoiceTablePro
           </tbody>
         </table>
       </div>
+
+      <InvoiceReminderModal 
+        open={reminderModalOpen} 
+        onClose={() => setReminderModalOpen(false)} 
+        invoices={invoices} 
+      />
     </div>
   )
 }
