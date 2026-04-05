@@ -36,14 +36,8 @@ export default function InvoiceReminderModal({ open, onClose, invoices }: Invoic
   const businessName: string = (currentUser && currentUser.businessName) || user?.fullName || "Your Business"
 
   // Setup Invoice Context
-  const { overdueInvoices, isDemoMode } = useMemo(() => {
-    let filtered = invoices.filter(i => i.paymentStatus === "overdue")
-    const isDemo = filtered.length === 0
-    if (isDemo) {
-      filtered = invoices.filter(i => i.paymentStatus === "outstanding")
-      if (filtered.length === 0) filtered = invoices
-    }
-    return { overdueInvoices: filtered, isDemoMode: isDemo }
+  const overdueInvoices = useMemo(() => {
+    return invoices.filter(i => i.paymentStatus === "overdue")
   }, [invoices])
 
   useEffect(() => {
@@ -89,7 +83,7 @@ export default function InvoiceReminderModal({ open, onClose, invoices }: Invoic
 - Days Overdue: ${contextData.daysOverdue}
 - Client Payment History: ${contextData.paymentPersonality} — typically pays ${contextData.avgDaysLate} days late
 
-Make it professional, specific, and include a clear call to action. Keep it under 150 words. Ensure you explicitly use the Sender Name and Our Company Name in the sign-off, and address the Client by name.`
+Write a highly impressive, articulate, and professional payment reminder email. The tone should be firm, polished, and maintain excellent business rapport. Provide structured details about the invoice, a formal request for payment status, and a polite but clear call to action. Ensure it is appropriately detailed and slightly longer than a basic reminder. Ensure you explicitly use the Sender Name and Our Company Name in the formal sign-off, and address the Client respectfully by name.`
 
     try {
       const response = await fetch(CONSTANTS.ROUTES.API_ANTHROPIC, {
@@ -147,7 +141,6 @@ Make it professional, specific, and include a clear call to action. Keep it unde
   return (
     <Modal open={open} onClose={onClose} title="Smart Reminders" width="w-[600px]">
       <div className="flex flex-col">
-        {isDemoMode && <DemoModeBanner />}
 
         {overdueInvoices.length > 1 && (
           <InvoiceSelector 
@@ -205,14 +198,6 @@ function AllCaughtUpView({ open, onClose }: { open: boolean, onClose: () => void
         </button>
       </div>
     </Modal>
-  )
-}
-
-function DemoModeBanner() {
-  return (
-    <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-[11px] font-bold p-2.5 rounded-lg mb-4 text-center">
-      🧪 You don't have any overdue invoices! We're temporarily displaying a random invoice so you can test this feature.
-    </div>
   )
 }
 
